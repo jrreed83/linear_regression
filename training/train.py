@@ -2,7 +2,7 @@ import torch.nn as nn
 import torch.optim as optim 
 import data.utils as utils 
 
-def train(model, train_data, valid_data, num_epochs=10):
+def train(model, X_train, y_train, X_validation, y_validation, num_epochs=10):
 
     # Function being minimized
     loss_fn = nn.MSELoss() 
@@ -11,8 +11,8 @@ def train(model, train_data, valid_data, num_epochs=10):
     optimizer = optim.RMSprop(model.parameters())
 
     # Build the dataset and get the dataloader for the training data
-    training_data = utils.load_data(X_train, y_train, batch_size=batch_size)
-    
+    training_data = utils.load_data(X_train, y_train, batch_size=10)
+
     # Main optimization loop
     for epoch in range(num_epochs):
 

@@ -4,21 +4,35 @@ import numpy as np
 import matplotlib.pyplot as plt 
 
 # Generate data
-def generate_data(n_samples = 1000):
+def generate_data(n_train, n_valid, n_test):
+
     w = np.array([1.0, 2.0, 3.0])
     b = 1.0
-    X = 100*np.random.randn(n_samples, 3) 
-    y = np.dot(X, w) + b 
-    return X, y
+
+    X_train = np.random.randn(n_train, 3) 
+    y_train = np.dot(X_train, w) + b
+
+    X_valid = np.random.randn(n_valid, 3) 
+    y_valid = np.dot(X_valid, w) + b 
+
+    X_test = np.random.randn(n_test, 3) 
+    y_test = np.dot(X_test, w) + b  
+
+    train = (X_train, y_train)
+    valid = (X_valid, y_valid)
+    test = (X_test, y_test)
+
+    return train, valid, test
 
 
 def main():
 
     # Generate Data Training Data
-    X_train, y_train = generate_data(1000) 
+    training_data, valid_data, test_data = generate_data(1000, 100, 100) 
 
-    # Generate Validation Data and normalize
-    X_valid, y_valid = generate_data(100)
+    X_train, y_train = training_data
+    X_valid, y_valid = valid_data
+    X_test, y_test = test_data
 
     # Instantiate Model
     model = LinearRegression(din = 3)
@@ -33,8 +47,8 @@ def main():
 
     print(model.layer.weight)
     print(model.layer.bias)
-    plt.plot(history['training_loss'])
-    plt.plot(history['validation_loss'])
+    plt.plot(history['training_loss'], 'bo-')
+    plt.plot(history['validation_loss'], 'ro-')
     plt.show()
 if __name__ == '__main__':
     main()

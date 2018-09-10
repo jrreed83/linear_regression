@@ -1,3 +1,4 @@
+import torch
 import torch.nn as nn 
 import torch.nn.functional as F 
 import torch.optim as optim 
@@ -28,8 +29,8 @@ def train(model, training_data, num_epochs = 10, lr = 1e-2, batch_size = 1, vali
 
     # Main optimization loop
     for epoch in range(num_epochs):
-        total_loss = 0.0
         # Loop over all mini-batches
+        batch_loss = []
         for inputs, targets in train_minibatches:
 
             # Compute the predicted outputs
@@ -44,12 +45,15 @@ def train(model, training_data, num_epochs = 10, lr = 1e-2, batch_size = 1, vali
             loss.backward()
             optimizer.step()
 
-            total_loss += loss.item()
+            # Add the loss for this mini-batch to the array of losses
+            batch_loss.append(loss.item())
 
-        # Want average error for all batches
-        history['training_loss'].append(total_loss)    
+        # The loss for each epoch is the average loss observed for all mini-batches
+        avg_loss = torch.tensor(batch_loss).mean().item()
+        
+        history['training_loss'].append(avg_loss)    
         # Evaluate on the validation data
-        print(f'Epoch {epoch}: {total_loss}')
+        print(f'Epoch {epoch}: {avg_loss}')
     
         # Validation loss/error
         for x_valid, y_valid in valid_minibatches:

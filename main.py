@@ -10,10 +10,12 @@ def generate_data(n_train, n_valid, n_test):
     b = 1.0
 
     X_train = np.random.randn(n_train, 3) 
-    y_train = np.dot(X_train, w) + b
+    y_train = np.dot(X_train, w) + b 
+    y_train += np.random.randn(n_train)
 
     X_valid = np.random.randn(n_valid, 3) 
     y_valid = np.dot(X_valid, w) + b 
+    y_valid += np.random.randn(n_valid)
 
     X_test = np.random.randn(n_test, 3) 
     y_test = np.dot(X_test, w) + b  

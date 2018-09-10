@@ -1,5 +1,6 @@
 from model.linear_regression import LinearRegression
-from training.train import train 
+from training.train1 import train as train1
+from training.train2 import train as train2 
 import numpy as np 
 import matplotlib.pyplot as plt 
 
@@ -40,7 +41,7 @@ def main():
     model = LinearRegression(din = 3)
 
     # Run training algorithm
-    history = train( 
+    history = train1( 
         model, 
         training_data = (X_train, y_train), 
         num_epochs = 100, 

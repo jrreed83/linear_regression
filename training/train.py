@@ -1,27 +1,40 @@
 import torch.nn as nn 
+import torch.nn.functional as F 
 import torch.optim as optim 
 import data.utils as utils 
 
-def train(model, X_train, y_train, X_validation, y_validation, num_epochs=10):
+def train(model, training_data, num_epochs = 10, lr = 1e-2, batch_size = 1, validation_data = None):
+
+    model.double()
 
     # Function being minimized
     loss_fn = nn.MSELoss() 
 
     # Optimization algorithm being used to minimize the loss
-    optimizer = optim.RMSprop(model.parameters())
+    optimizer = optim.RMSprop(model.parameters(), lr = lr)
 
     # Build the dataset and get the dataloader for the training data
-    training_data = utils.load_data(X_train, y_train, batch_size=10)
+    X_train, y_train = training_data
+    minibatches = utils.load_data(X_train, y_train, batch_size=10)
+
+    # Validation data
+    X_valid, y_valid = validation_data
+    validation = utils.load_data(X_valid, y_valid, batch_size = len(y_valid))
+
+    history = {
+        'training_loss': [],
+        'validation_loss': []
+    }
 
     # Main optimization loop
     for epoch in range(num_epochs):
-
+        total_loss = 0.0
         # Loop over all mini-batches
-        for inputs, targets in training_data:
+        for inputs, targets in minibatches:
 
             # Compute the predicted outputs
             outputs = model(inputs)
-
+            
             # Evaluate the difference between the known targets
             # and the predicted targets
             loss = loss_fn(outputs, targets)
@@ -30,8 +43,22 @@ def train(model, X_train, y_train, X_validation, y_validation, num_epochs=10):
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
+
+            total_loss += loss.item()
+
+        history['training_loss'].append(total_loss)    
+        # Evaluate on the validation data
+        print(f'Epoch {epoch}: {total_loss}')
     
+        # Validation loss/error
+        for x_valid, y_valid in validation:
+            pred = model(x_valid)
+            err = F.mse_loss(pred, y_valid)
+            err = err.item()
+            print(f'err: {err}')
+            history['validation_loss'].append(err)
+
+    return history
     # Evaluate the accuracy of the model on the validation data
-    model()
 
 

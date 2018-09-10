@@ -13,8 +13,7 @@ class Dataset(d.Dataset):
 
 def load_data(X, y, batch_size = 1):
     '''
-    Returns the data loader for provided feature matrix X
-    and targets y
+    Returns the data loader for provided feature matrix X and targets y
     '''
     data = Dataset(X, y)
     loader = d.DataLoader(data, batch_size = batch_size)

@@ -6,4 +6,6 @@ class LinearRegression(nn.Module):
         self.layer = nn.Linear(din,1) 
     def forward(self, inputs):
         outputs = self.layer(inputs)
+        # This makes the outputs a 1D tensor
+        outputs = outputs.view(-1)
         return outputs
